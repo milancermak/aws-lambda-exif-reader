@@ -6,9 +6,9 @@ import s2sphere
 Coordinate = collections.namedtuple('Coordinate', ('lat', 'lng'))
 
 
+# pylint: disable=inconsistent-return-statements
 def extract_coordinate(exif_data):
-    if ('EXIF:GPSLatitude' in exif_data and
-        'EXIF:GPSLongitude' in exif_data):
+    if ('EXIF:GPSLatitude' in exif_data and 'EXIF:GPSLongitude' in exif_data):
         lat = exif_data['EXIF:GPSLatitude']
         lng = exif_data['EXIF:GPSLongitude']
         return Coordinate(lat, lng)

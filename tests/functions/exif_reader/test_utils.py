@@ -1,5 +1,4 @@
 import io
-import os
 from unittest.mock import Mock
 
 import pytest

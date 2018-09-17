@@ -1,9 +1,11 @@
+# pylint: disable=global-statement,unused-argument
+
 import io
 from unittest.mock import Mock
 
 import pytest
 
-from exif_reader import main, geo
+from exif_reader import main
 from helpers import file_as_buffer
 
 
@@ -69,6 +71,5 @@ def test_handler_exif_with_geo(monkeypatch, mock_ddb):
     assert ddb_mock.store_coordinate.call_count == 1
     (object_key, coord), _kwargs = ddb_mock.store_coordinate.call_args
     assert object_key == 'happydog.jpg'
-    assert isinstance(coord, geo.Coordinate)
     assert pytest.approx(coord.lat, 8.1428277777777)
     assert pytest.approx(coord.lng, 79.709686111111)

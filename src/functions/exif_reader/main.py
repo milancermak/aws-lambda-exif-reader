@@ -1,7 +1,7 @@
 import jmespath
 
 from core import logger
-from . import ddb, geo, utils
+import ddb, geo, utils # pylint: disable=multiple-imports
 
 
 def handler(event, context):

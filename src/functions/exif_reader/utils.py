@@ -16,6 +16,7 @@ def fetch_from_bucket(bucket_name, object_key):
     buffer.seek(0)
     return buffer
 
+# pylint: disable=inconsistent-return-statements
 def read_exif_from_image(buffer):
     buffer.seek(0)
     with tempfile.NamedTemporaryFile() as tmp:
@@ -24,9 +25,9 @@ def read_exif_from_image(buffer):
         here = os.path.abspath(os.path.dirname(__file__))
         exiftool_path = os.path.join(here, 'exiftool')
         command = [exiftool_path, '-G', '-j', '-n', '-sort', tmp.name]
-        p = subprocess.Popen(command, stdout=subprocess.PIPE)
+        exiftool = subprocess.Popen(command, stdout=subprocess.PIPE)
 
-        output = p.stdout.read().decode('utf-8')
+        output = exiftool.stdout.read().decode('utf-8')
         if output and 'ExifTool:Error' not in output:
             arr = json.loads(output)
             return arr[0]
