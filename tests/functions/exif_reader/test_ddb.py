@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from functions.exif_reader import ddb, geo
+from exif_reader import ddb, geo
 
 
 @pytest.mark.parametrize(
@@ -22,7 +22,7 @@ def test_generate_hash_key(geohash, hash_key_length, expected):
 def test_store_exif_data(monkeypatch):
     monkeypatch.setenv('EXIF_DATA_TABLE', 'exif_data')
     dynamodb_mock = Mock()
-    monkeypatch.setattr('functions.exif_reader.ddb.dynamodb', dynamodb_mock)
+    monkeypatch.setattr('exif_reader.ddb.dynamodb', dynamodb_mock)
     table_mock = Mock()
     dynamodb_mock.Table.return_value = table_mock
 
@@ -46,7 +46,7 @@ def test_store_coordinate(monkeypatch):
     monkeypatch.setenv('GEO_DATA_TABLE', 'geo_data')
     monkeypatch.setenv('HASH_KEY_LENGTH', 6)
     dynamodb_mock = Mock()
-    monkeypatch.setattr('functions.exif_reader.ddb.dynamodb', dynamodb_mock)
+    monkeypatch.setattr('exif_reader.ddb.dynamodb', dynamodb_mock)
     table_mock = Mock()
     dynamodb_mock.Table.return_value = table_mock
 

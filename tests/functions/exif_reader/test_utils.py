@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from functions.exif_reader import utils
+from exif_reader import utils
 from helpers import file_as_buffer
 
 

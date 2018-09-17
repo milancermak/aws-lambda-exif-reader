@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from functions.exif_reader import main, geo
+from exif_reader import main, geo
 from helpers import file_as_buffer
 
 
@@ -14,11 +14,11 @@ ddb_mock = None
 def mock_ddb(monkeypatch):
     global ddb_mock
     ddb_mock = Mock()
-    monkeypatch.setattr('functions.exif_reader.main.ddb', ddb_mock)
+    monkeypatch.setattr('exif_reader.main.ddb', ddb_mock)
 
 def test_handler_no_object(monkeypatch):
     utils_mock = Mock()
-    monkeypatch.setattr('functions.exif_reader.main.utils', utils_mock)
+    monkeypatch.setattr('exif_reader.main.utils', utils_mock)
 
     event = {'weird': 'payload'}
     main.handler(event, {})
@@ -27,7 +27,7 @@ def test_handler_no_object(monkeypatch):
 
 def test_handler_no_exif_data(monkeypatch, mock_ddb):
     fetch_mock = Mock(return_value=io.BytesIO(b'0xdeadbeef'))
-    monkeypatch.setattr('functions.exif_reader.main.utils.fetch_from_bucket',
+    monkeypatch.setattr('exif_reader.main.utils.fetch_from_bucket',
                         fetch_mock)
 
     event = {'Records': [{'s3': {'object': {'key': 'not/an/image.txt'}}}]}
@@ -38,7 +38,7 @@ def test_handler_no_exif_data(monkeypatch, mock_ddb):
 
 def test_handler_exif_no_geo(monkeypatch, mock_ddb):
     fetch_mock = Mock(return_value=file_as_buffer('./matterhorn.png'))
-    monkeypatch.setattr('functions.exif_reader.main.utils.fetch_from_bucket',
+    monkeypatch.setattr('exif_reader.main.utils.fetch_from_bucket',
                         fetch_mock)
 
     event = {'Records': [{'s3': {'object': {'key': 'matterhorn.png'}}}]}
@@ -54,7 +54,7 @@ def test_handler_exif_no_geo(monkeypatch, mock_ddb):
 
 def test_handler_exif_with_geo(monkeypatch, mock_ddb):
     fetch_mock = Mock(return_value=file_as_buffer('./happydog.jpg'))
-    monkeypatch.setattr('functions.exif_reader.main.utils.fetch_from_bucket',
+    monkeypatch.setattr('exif_reader.main.utils.fetch_from_bucket',
                         fetch_mock)
 
     event = {'Records': [{'s3': {'object': {'key': 'happydog.jpg'}}}]}

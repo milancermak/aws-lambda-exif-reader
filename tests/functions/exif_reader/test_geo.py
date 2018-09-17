@@ -1,6 +1,6 @@
 import pytest
 
-from functions.exif_reader import geo
+from exif_reader import geo
 
 
 def test_coordinate():

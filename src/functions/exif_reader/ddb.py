@@ -3,7 +3,7 @@ import os
 
 import boto3
 
-from . import geo
+import geo
 
 
 HASHKEY_ATTRIBUTE_NAME = 'hashKey'
