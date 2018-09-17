@@ -27,17 +27,14 @@ def test_fetch_from_bucket(monkeypatch):
 
 @pytest.mark.parametrize('image_name', ('happydog.jpg', 'matterhorn.png'))
 def test_read_exif_from_image(image_name):
-    here = os.path.abspath(os.path.dirname(__file__))
-    image_path = os.path.join(here, image_name)
-    buffer = file_as_buffer(image_path)
+    buffer = file_as_buffer(image_name)
     exif_data = utils.read_exif_from_image(buffer)
 
     assert isinstance(exif_data, dict)
     assert 'ExifTool:Error' not in exif_data
 
 def test_read_exif_from_image_faux_input():
-    this_path = os.path.abspath(__file__)
-    buffer = file_as_buffer(this_path)
+    buffer = file_as_buffer(__file__)
     exif_data = utils.read_exif_from_image(buffer)
 
     assert exif_data is None
