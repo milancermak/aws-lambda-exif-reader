@@ -1,0 +1,10 @@
+language: python
+python: '3.6'
+cache: pip
+
+install:
+  - find . -name 'requirements*.txt' -exec pip install -r '{}' \;
+
+script:
+  - pytest tests
+  - "bash -x ./scripts/lint_code.sh"
