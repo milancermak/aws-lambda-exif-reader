@@ -22,11 +22,14 @@ def read_exif_from_image(buffer):
     with tempfile.NamedTemporaryFile() as tmp:
         tmp.write(buffer.read())
         tmp.seek(0)
-        here = os.path.abspath(os.path.dirname(__file__))
-        exiftool_path = os.path.join(here, 'exiftool')
-        command = [exiftool_path, '-G', '-j', '-n', '-sort', tmp.name]
-        exiftool = subprocess.Popen(command, stdout=subprocess.PIPE)
 
+        here = os.path.abspath(os.path.dirname(__file__))
+        exiftool_root = os.path.join(here, 'et')
+        exiftool_cmd = os.path.join(exiftool_root, 'exiftool')
+        command = ['perl', f'-I{exiftool_root}',
+                   exiftool_cmd, '-G', '-j', '-n', '-sort', tmp.name]
+
+        exiftool = subprocess.Popen(command, stdout=subprocess.PIPE)
         output = exiftool.stdout.read().decode('utf-8')
         if output and 'ExifTool:Error' not in output:
             arr = json.loads(output)

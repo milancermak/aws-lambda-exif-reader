@@ -4336,7 +4336,7 @@ information.  Use the B<-s> option to see the tag names instead.
 =item B<-->I<TAG>
 
 Exclude specified tag from extracted information.  Same as the B<-x> option.
-Group names and wildcards are permitted as described above for B<-TAG>. 
+Group names and wildcards are permitted as described above for B<-TAG>.
 Once excluded from the output, a tag may not be re-included by a subsequent
 option.  May also be used following a B<-tagsFromFile> option to exclude
 tags from being copied (when redirecting to another tag, it is the source
@@ -4418,7 +4418,7 @@ deleting all groups. For example, C<-2all:all=> deletes tags individually,
 while C<-all:all=> deletes entire blocks.
 
 5) The "APP" group names ("APP0" through "APP15") are used to delete JPEG
-application segments which are not associated with another deletable group. 
+application segments which are not associated with another deletable group.
 For example, specifying C<-APP14:All=> will NOT delete the APP14 "Adobe"
 segment because this is accomplished with C<-Adobe:All>.
 
@@ -4499,7 +4499,7 @@ An extension of the redirection feature allows strings involving tag names
 to be used on the right hand side of the C<E<lt>> symbol with the syntax
 E<quot>'-I<DSTTAG>E<lt>I<STR>'E<quot>, where tag names in I<STR> are
 prefixed with a C<$> symbol.  See the B<-p> option and the
-L</Advanced formatting feature> section for more details about this syntax. 
+L</Advanced formatting feature> section for more details about this syntax.
 Strings starting with a C<=> sign must insert a single space after the
 C<E<lt>> to avoid confusion with the C<E<lt>=> operator which sets the tag
 value from the contents of a file.  A single space at the start of the
@@ -5199,7 +5199,7 @@ example:
 A special feature allows the copy number to be incremented for each
 processed file by using %C (upper case) instead of %c.  This allows a
 sequential number to be added to output file names, even if the names are
-different.  For %C, a copy number of zero is not omitted as it is with %c. 
+different.  For %C, a copy number of zero is not omitted as it is with %c.
 The number before the decimal place gives the starting index, the number
 after the decimal place gives the field width.  The following examples show
 the output filenames when used with the command
@@ -5275,7 +5275,7 @@ are formatted as an RDF Bag, but they are combined into a single string when
 B<-s> or B<-sep> is used.  Using B<-L> changes the XML encoding from "UTF-8"
 to "windows-1252".  Other B<-charset> settings change the encoding only if
 there is a corresponding standard XML character set.  The B<-b> option
-causes binary data values to be written, encoded in base64 if necessary. 
+causes binary data values to be written, encoded in base64 if necessary.
 The B<-t> option adds tag table information to the output (see B<-t> for
 details).
 
@@ -5294,7 +5294,7 @@ B<-o> option with an XMP extension for the output file.
 
 Allow (B<-a>) or suppress (B<--a>) duplicate tag names to be extracted.  By
 default, duplicate tags are suppressed unless the B<-ee> or B<-X> options
-are used or the Duplicates option is enabled in the configuration file. 
+are used or the Duplicates option is enabled in the configuration file.
 This option also has an affect when writing to allow duplicate Warning
 messages to be shown.
 
@@ -5378,7 +5378,7 @@ I<TAG>.  For example, to process files in order of date:
 
     exiftool -fileOrder DateTimeOriginal DIR
 
-Additional B<-fileOrder> options may be added for secondary sort keys. 
+Additional B<-fileOrder> options may be added for secondary sort keys.
 Numbers are sorted numerically, and all other values are sorted
 alphabetically.  The sort order may be reversed by prefixing the tag name
 with a C<-> (eg. C<-fileOrder -createdate>).  Print conversion of the sorted
@@ -5460,7 +5460,7 @@ errors and disables some validation checks which could result in minor
 warnings.  Generally, minor errors/warnings indicate a problem which usually
 won't result in loss of metadata if ignored.  However, there are exceptions,
 so ExifTool leaves it up to you to make the final decision.  Minor errors
-and warnings are indicated by "[minor]" at the start of the message. 
+and warnings are indicated by "[minor]" at the start of the message.
 Warnings which affect processing when ignored are indicated by "[Minor]"
 (with a capital "M").
 
@@ -5534,7 +5534,7 @@ is superseded by any value written to the FileModifyDate tag.
 
 =item B<-password> I<PASSWD>
 
-Specify password to allow processing of password-protected PDF documents. 
+Specify password to allow processing of password-protected PDF documents.
 If a password is required but not given, a warning is issued and the
 document is not processed.  This option is ignored if a password is not
 required.
@@ -5555,7 +5555,7 @@ default I<TITLE> string of "ExifTool %p%%" is assumed.  In the string, %f
 represents the file name, %p is the progress as a percent, %r is the
 progress as a ratio, %##b is a progress bar of width "##" (20 characters if
 "##" is omitted), and %% is a % character.  May be combined with the normal
-B<-progress> option to also show the progress count in console messages. 
+B<-progress> option to also show the progress count in console messages.
 (Note: For this feature to function correctly on Mac/Linux, stderr must go
 to the console.)
 
@@ -5761,14 +5761,14 @@ Windows) to prevent filename expansion.  For example:
 
 Currently supported track file formats are GPX, NMEA RMC/GGA/GLL, KML, IGC,
 Garmin XML and TCX, Magellan PMGNTRK, Honeywell PTNTHPR, Winplus Beacon
-text, and Bramor gEO log files.  See L</GEOTAGGING EXAMPLES> for examples. 
+text, and Bramor gEO log files.  See L</GEOTAGGING EXAMPLES> for examples.
 Also see "geotag.html" in the full ExifTool distribution and the
 L<Image::ExifTool Options|Image::ExifTool/Options> for more details and for
 information about geotag configuration options.
 
 =item B<-globalTimeShift> I<SHIFT>
 
-Shift all formatted date/time values by the specified amount when reading. 
+Shift all formatted date/time values by the specified amount when reading.
 Does not apply to unformatted (B<-n>) output.  I<SHIFT> takes the same form
 as the date/time shift when writing (see
 L<Image::ExifTool::Shift.pl|Image::ExifTool::Shift.pl> for details), with a
@@ -5787,7 +5787,7 @@ I<SHIFT> string.  For example:
 
 Add features from specified plug-in I<MODULE>.  Currently, the MWG module is
 the only plug-in module distributed with exiftool.  This module adds
-read/write support for tags as recommended by the Metadata Working Group. 
+read/write support for tags as recommended by the Metadata Working Group.
 To save typing, C<-use MWG> is assumed if the C<MWG> group is specified for
 any tag on the command line.  See the
 L<MWG Tags documentation|Image::ExifTool::TagNames/MWG Tags> for more
@@ -6364,14 +6364,14 @@ C<src.jpg>.
 Rebuild all EXIF meta information from scratch in an image.  This technique
 can be used in JPEG images to repair corrupted EXIF information which
 otherwise could not be written due to errors.  The C<Unsafe> tag is a
-shortcut for unsafe EXIF tags in JPEG images which are not normally copied. 
+shortcut for unsafe EXIF tags in JPEG images which are not normally copied.
 See the L<tag name documentation|Image::ExifTool::TagNames> for more details
 about unsafe tags.
 
 =item exiftool -Tagsfromfile a.jpg out.xmp
 
 Copy meta information from C<a.jpg> to an XMP data file.  If the XMP data
-file C<out.xmp> already exists, it will be updated with the new information. 
+file C<out.xmp> already exists, it will be updated with the new information.
 Otherwise the XMP data file will be created.  Only metadata-only files may
 be created like this (files containing images may be edited but not
 created).  See L</WRITING EXAMPLES> above for another technique to generate
@@ -6411,7 +6411,7 @@ C<dst.jpg>.
 
 =item exiftool '-Description<${FileName;s/\.[^.]*$//}' dir
 
-Set the image Description from the file name after removing the extension. 
+Set the image Description from the file name after removing the extension.
 This example uses the L</Advanced formatting feature> to perform a
 substitution operation to remove the last dot and subsequent characters from
 the file name.
@@ -6632,7 +6632,7 @@ Add an IPTC keyword in a pipeline, saving output to a new file.
 
 =item curl -s http://a.domain.com/bigfile.jpg | exiftool -fast -
 
-Extract information from an image over the internet using the cURL utility. 
+Extract information from an image over the internet using the cURL utility.
 The B<-fast> option prevents exiftool from scanning for trailer information,
 so only the meta information header is transferred.
 
