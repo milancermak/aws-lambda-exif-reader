@@ -7,8 +7,9 @@ env:
     - AWS_DEFAULT_REGION: us-east-1
 
 install:
-  - find . -name 'requirements*.txt' -exec pip install -r '{}' \;
+  - "bash -x ./scripts/install_deps.sh"
 
 script:
   - pytest tests
   - "bash -x ./scripts/lint_code.sh"
+  - "bash -x ./scripts/lint_cfn.sh"

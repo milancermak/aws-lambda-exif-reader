@@ -1,0 +1,152 @@
+---
+
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  ImageBucketName:
+    Description: >-
+      Name of the bucket where images for EXIF data extraction will be stored
+    Type: String
+
+  HashKeyLength:
+    Description: >-
+      The number of digits from the geohash to use for storing coordinates
+      into DynamoDB. A longer hash key is better for distributing the data
+      across multiple hash key spaces. However, it also means potentially
+      using more Query requests, hence higher load, to retrieve data.
+    Default: 6
+    Type: Number
+
+  Service:
+    Description: Name of the service, propagated all over the place. Choose wisely.
+    Type: String
+    AllowedPattern: '^[a-z]+(-[a-z]+)*$'
+    Default: exif-reader
+    ConstraintDescription: must contain only lowercase letters and hyphens
+
+  Stage:
+    Description: Deployment phase
+    Type: String
+    AllowedValues:
+      - beta
+      - prod
+
+Globals:
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst#supported-resources
+  Function:
+    Environment:
+      Variables:
+        PYTHONPATH: '/var/runtime:/var/task/lib'
+        REGION: !Ref AWS::Region
+        SERVICE: !Ref Service
+        STAGE: !Ref Stage
+    Handler: main.handler
+    MemorySize: 2048
+    Runtime: python3.6
+    Timeout: 300
+
+Resources:
+  ExifDataTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: hashKey
+        Type: String
+      SSESpecification:
+        SSEEnabled: true
+
+  GeoDataTable:
+    Type: AWS::DynamoDB::Table
+    DependsOn: ExifDataTable # need to create tables w/ indexes sequentally
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: hashKey
+          AttributeType: N
+        - AttributeName: rangeKey
+          AttributeType: S
+        - AttributeName: geohash
+          AttributeType: N
+      KeySchema:
+        - AttributeName: hashKey
+          KeyType: HASH
+        - AttributeName: rangeKey
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: geohash-index
+          KeySchema:
+            - AttributeName: hashKey
+              KeyType: HASH
+            - AttributeName: geohash
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: true
+
+  # CoreRuntimePolicy:
+  #   Type: AWS::IAM::ManagedPolicy
+  #   Properties:
+  #     Description: Policy with basic privileges allowing the functions to run properly
+  #     PolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Action:
+  #             - logs:CreateLogGroup
+  #             - logs:CreateLogStream
+  #             - logs:PutLogEvents
+  #           Resource:
+  #             - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*'
+
+  TableWritePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows write to DDB tables used by the service
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeTable
+              - dynamodb:PutItem
+            Resource:
+              - !GetAtt ExifDataTable.Arn
+              - !GetAtt GeoDataTable.Arn
+
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+      BucketName: !Ref ImageBucketName
+
+  ExifReader:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Extracts EXIF data from images and stores it in DynamoDB
+      CodeUri: '../src/functions/exif_reader'
+      Environment:
+        Variables:
+          EXIF_DATA_TABLE: !Ref ExifDataTable
+          GEO_DATA_TABLE: !Ref GeoDataTable
+          HASH_KEY_LENGTH: !Ref HashKeyLength
+      # TODO: enable later to resolve circular dependency
+      # Events:
+      #   ImageCreated:
+      #     Type: S3
+      #     Properties:
+      #       Bucket: !Ref ImageBucket
+      #       Events: s3:ObjectCreated:*
+      Policies:
+        - TableWritePolicy
+        - S3ReadPolicy:
+            BucketName: !Ref ImageBucket
+
+        # TODO: check if the CoreRuntimePolicy is necessary - doesn't SAM autocreate sth like it?
+        # - CoreRuntimePolicy: {}

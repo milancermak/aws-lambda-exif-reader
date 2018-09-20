@@ -1,0 +1,64 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Essential shared resources
+
+Parameters:
+  Service:
+    Description: Name of the service, propagated all over the place. Choose wisely.
+    Type: String
+    AllowedPattern: '^[a-z]+(-[a-z]+)*$'
+    ConstraintDescription: must contain only lowercase letters and hyphens
+
+Resources:
+  CodeCommitRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: !Ref Service
+
+  ServiceKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: !Sub 'Master encryption key used within ${Service}'
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: !Sub 'Allows administration of ${Service} KMS key'
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:user/admin'
+                - !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:user/dev'
+                - !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:root'
+            Action:
+              - 'kms:*'
+            Resource: '*'
+
+  ServiceKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub 'alias/${Service}-key'
+      TargetKeyId: !Ref ServiceKey
+
+Outputs:
+  RepositoryArn:
+    Description: Code repository ARN
+    Value: !GetAtt CodeCommitRepository.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RepositoryArn'
+
+  RepositoryName:
+    Description: Code repository name
+    Value: !GetAtt CodeCommitRepository.Name
+    Export:
+      Name: !Sub '${AWS::StackName}-RepositoryName'
+
+  RepositoryURL:
+    Description: Code repository URL
+    Value: !GetAtt CodeCommitRepository.CloneUrlSsh
+
+  ServiceKeyArn:
+    Description: Master encryption key ARN
+    Value: !GetAtt ServiceKey.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-ServiceKeyArn'
