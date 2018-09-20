@@ -26,10 +26,11 @@ phases:
   post_build:
     commands:
       - aws cloudformation package --template-file infrastructure/functions.yml --output-template-file packaged_functions.yml --s3-bucket "${ARTIFACTS_BUCKET}"
+      - python scripts/sam_translate.py --input-file packaged_functions.yml --output-file cfn_functions.json
 
 artifacts:
   files:
-    - packaged_functions.yml
+    - cfn_functions.json
 
 cache:
   paths:

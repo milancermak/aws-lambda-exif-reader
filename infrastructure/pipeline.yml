@@ -183,7 +183,7 @@ Resources:
                 Capabilities: CAPABILITY_IAM
                 RoleArn: !GetAtt CloudformationRole.Arn
                 StackName: !Sub '${Service}-functions'
-                TemplatePath: BuildProdOutput::packaged_functions.yml
+                TemplatePath: BuildProdOutput::cfn_functions.json
                 ParameterOverrides: !Sub '{"Service": "${Service}", "Stage": "prod"}'
               InputArtifacts:
                 - Name: BuildProdOutput
