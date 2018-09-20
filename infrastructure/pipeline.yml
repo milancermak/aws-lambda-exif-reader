@@ -73,6 +73,11 @@ Resources:
                   - s3:GetObjectVersion
                   - s3:PutObject
                 Resource: !Join ['/', [!GetAtt ArtifactsBucket.Arn, '*']]
+              - Sid: SamTranslateDependencyPolicy
+                Effect: Allow
+                Action:
+                  - iam:ListPolicies
+                Resource: '*'
 
   CodePipelineRole:
     Type: AWS::IAM::Role
