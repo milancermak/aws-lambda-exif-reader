@@ -72,8 +72,7 @@ Resources:
                   - s3:GetObject
                   - s3:GetObjectVersion
                   - s3:PutObject
-                #Resource: !GetAtt ArtifactsBucket.Arn
-                Resource: '*'
+                Resource: !Join ['/', [ArtifactsBucket.Arn, '*']]
 
   CodePipelineRole:
     Type: AWS::IAM::Role
