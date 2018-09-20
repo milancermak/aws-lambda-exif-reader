@@ -4,7 +4,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-  ImageBucketName:
+  ImagesBucketName:
     Description: >-
       Name of the bucket where images for EXIF data extraction will be stored
     Default: exif-reader-source-images
@@ -118,14 +118,14 @@ Resources:
               - !GetAtt ExifDataTable.Arn
               - !GetAtt GeoDataTable.Arn
 
-  ImageBucket:
+  ImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: aws:kms
-      BucketName: !Ref ImageBucketName
+      BucketName: !Ref ImagesBucketName
 
   ExifReader:
     Type: AWS::Serverless::Function
@@ -142,12 +142,12 @@ Resources:
       #   ImageCreated:
       #     Type: S3
       #     Properties:
-      #       Bucket: !Ref ImageBucket
+      #       Bucket: !Ref ImagesBucket
       #       Events: s3:ObjectCreated:*
       Policies:
-        - TableWritePolicy
+        - !Ref TableWritePolicy
         - S3ReadPolicy:
-            BucketName: !Ref ImageBucket
+            BucketName: !Ref ImagesBucket
 
         # TODO: check if the CoreRuntimePolicy is necessary - doesn't SAM autocreate sth like it?
         # - CoreRuntimePolicy: {}
