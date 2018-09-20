@@ -11,5 +11,5 @@ install:
 
 script:
   - pytest tests
-  - "bash -x ./scripts/lint_code.sh"
+  - "bash -x ./scripts/lint_py.sh"
   - "bash -x ./scripts/lint_cfn.sh"

@@ -16,7 +16,7 @@ phases:
   pre_build:
     commands:
       - pytest tests
-      - scripts/lint_code.sh
+      - scripts/lint_py.sh
       - scripts/lint_cfn.sh
 
   build:
