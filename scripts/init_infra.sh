@@ -21,10 +21,10 @@ function create_stack() {
     local fqsn=${SERVICE_NAME}-${stack} # fully qualified stack name
 
     echo "Creating ${fqsn} stack"
-    echo aws cloudformation ${AWS_CLI_ARGS} create-stack --stack-name ${fqsn} --template-body file://${INFRADIR}/${stack}.yml --parameters ParameterKey=Service,ParameterValue=${SERVICE_NAME} --tags Key=Service,Value=${SERVICE_NAME} --on-failure DELETE
-    echo aws cloudformation ${AWS_CLI_ARGS} wait stack-create-complete --stack-name ${fqsn}
+    aws cloudformation ${AWS_CLI_ARGS} create-stack --stack-name ${fqsn} --template-body file://${INFRADIR}/${stack}.yml --parameters ParameterKey=Service,ParameterValue=${SERVICE_NAME} --tags Key=Service,Value=${SERVICE_NAME} --on-failure DELETE --capabilities CAPABILITY_IAM
+    aws cloudformation ${AWS_CLI_ARGS} wait stack-create-complete --stack-name ${fqsn}
     echo "Stack created successfully. Outputs:"
-    echo aws cloudformation ${AWS_CLI_ARGS} describe-stacks --stack-name ${fqsn} --query 'Stacks[0].Outputs'
+    aws cloudformation ${AWS_CLI_ARGS} describe-stacks --stack-name ${fqsn} --query 'Stacks[0].Outputs'
 }
 
 create_stack essentials
