@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name
+
 import decimal
 from unittest.mock import Mock
 

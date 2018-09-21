@@ -16,6 +16,7 @@ dynamodb = boto3.resource('dynamodb')
 
 
 def decimalize(exif_data):
+    # pylint: disable=invalid-name
     d = {}
     for k, v in exif_data.items():
         if isinstance(v, float):
