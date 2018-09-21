@@ -131,4 +131,5 @@ Resources:
       Policies:
         - !Ref TableWritePolicy
         - S3ReadPolicy:
-            BucketName: !Ref ImagesBucket
+            # using name to avoid circular dependency
+            BucketName: !Ref ImagesBucketName
