@@ -88,21 +88,6 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
-  # CoreRuntimePolicy:
-  #   Type: AWS::IAM::ManagedPolicy
-  #   Properties:
-  #     Description: Policy with basic privileges allowing the functions to run properly
-  #     PolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - logs:CreateLogGroup
-  #             - logs:CreateLogStream
-  #             - logs:PutLogEvents
-  #           Resource:
-  #             - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*'
-
   TableWritePolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
@@ -147,5 +132,3 @@ Resources:
         - !Ref TableWritePolicy
         - S3ReadPolicy:
             BucketName: !Ref ImagesBucket
-        # TODO: check if the CoreRuntimePolicy is necessary - doesn't SAM autocreate sth like it?
-        # - CoreRuntimePolicy: {}
