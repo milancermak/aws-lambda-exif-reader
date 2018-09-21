@@ -1,3 +1,4 @@
+import decimal
 import math
 import os
 
@@ -14,6 +15,15 @@ GEOJSON_ATTRIBUTE_NAME = 'geoJson'
 dynamodb = boto3.resource('dynamodb')
 
 
+def decimalize(exif_data):
+    d = {}
+    for k, v in exif_data.items():
+        if isinstance(v, float):
+            d[k] = decimal.Decimal(v)
+        else:
+            d[k] = v
+    return d
+
 def generate_hash_key(geohash, hash_key_length):
     # adapted from the dynamodb-geo lib
     # src/com/amazonaws/geo/s2/internal/S2Manager.java
@@ -25,7 +35,8 @@ def generate_hash_key(geohash, hash_key_length):
 
 def store_exif_data(object_key, exif_data):
     table = dynamodb.Table(os.environ['EXIF_DATA_TABLE'])
-    item = {HASHKEY_ATTRIBUTE_NAME: object_key, 'exif_data': exif_data}
+    item = {HASHKEY_ATTRIBUTE_NAME: object_key,
+            'exif_data': decimalize(exif_data)}
     table.put_item(Item=item)
 
 def store_coordinate(object_key, coord):

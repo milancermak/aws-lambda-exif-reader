@@ -1,9 +1,19 @@
+import decimal
 from unittest.mock import Mock
 
 import pytest
 
 from exif_reader import ddb, geo
 
+
+def test_decimalize():
+    d = {'string': 'hello',
+         'float': 1.23}
+    out = ddb.decimalize(d)
+
+    assert isinstance(out, dict)
+    assert isinstance(out['string'], str)
+    assert isinstance(out['float'], decimal.Decimal)
 
 @pytest.mark.parametrize(
     'geohash, hash_key_length, expected',
@@ -27,7 +37,8 @@ def test_store_exif_data(monkeypatch):
     dynamodb_mock.Table.return_value = table_mock
 
     object_key = 'path/to/image/happydog.jpg'
-    exif_data = {'SourceFile': 'happydog.jpg'}
+    exif_data = {'SourceFile': 'happydog.jpg',
+                 "EXIF:FocalLength": 4.15}
 
     ddb.store_exif_data(object_key, exif_data)
 
@@ -41,6 +52,13 @@ def test_store_exif_data(monkeypatch):
     item_values = kwargs['Item'].values()
     assert object_key in item_values
     assert exif_data in item_values
+
+    stored_exif_data = kwargs['Item']['exif_data']
+    has_decimals = False
+    for v in stored_exif_data.values():
+        if isinstance(v, decimal.Decimal):
+            has_decimals = True
+    assert has_decimals
 
 def test_store_coordinate(monkeypatch):
     monkeypatch.setenv('GEO_DATA_TABLE', 'geo_data')
