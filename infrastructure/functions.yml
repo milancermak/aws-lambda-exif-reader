@@ -137,17 +137,15 @@ Resources:
           EXIF_DATA_TABLE: !Ref ExifDataTable
           GEO_DATA_TABLE: !Ref GeoDataTable
           HASH_KEY_LENGTH: !Ref HashKeyLength
-      # TODO: enable later to resolve circular dependency
-      # Events:
-      #   ImageCreated:
-      #     Type: S3
-      #     Properties:
-      #       Bucket: !Ref ImagesBucket
-      #       Events: s3:ObjectCreated:*
+      Events:
+        ImageCreated:
+          Type: S3
+          Properties:
+            Bucket: !Ref ImagesBucket
+            Events: s3:ObjectCreated:*
       Policies:
         - !Ref TableWritePolicy
         - S3ReadPolicy:
             BucketName: !Ref ImagesBucket
-
         # TODO: check if the CoreRuntimePolicy is necessary - doesn't SAM autocreate sth like it?
         # - CoreRuntimePolicy: {}
