@@ -13,6 +13,6 @@ find $SRC_DIR -name '*.py' -not -path '*/lib/*' | xargs pylint --rcfile=$ROOT_DI
 
 echo 'Linting tests'
 # disabling extra lint warnings for test files where we mingle the sys.path and ignore some style ones
-find $TESTS_DIR -name '*.py' ! -name 'conftest.py' | xargs pylint --rcfile=$ROOT_DIR/.pylintrc --disable=multiple-imports,no-name-in-module,wrong-import-position,import-error,redefined-outer-name,ungrouped-imports,line-too-long || EXIT_STATUS=$?
+find $TESTS_DIR -name '*.py' ! -name 'conftest.py' | xargs pylint --rcfile=$ROOT_DIR/.pylintrc --disable=multiple-imports,no-name-in-module,wrong-import-position,import-error,redefined-outer-name,ungrouped-imports,line-too-long || EXIT_STATUS=$(($EXIT_STATUS + $?))
 
 exit $EXIT_STATUS
