@@ -17,12 +17,18 @@ dynamodb = boto3.resource('dynamodb')
 
 def decimalize(exif_data):
     # pylint: disable=invalid-name
+
     d = {}
-    for k, v in exif_data.items():
-        if isinstance(v, float):
-            d[k] = decimal.Decimal(v)
-        else:
-            d[k] = v
+    # from ://github.com/boto/boto3/issues/665#issuecomment-223851711
+    with decimal.localcontext(boto3.dynamodb.types.DYNAMODB_CONTEXT) as ctx:
+        ctx.traps[decimal.Inexact] = False
+        ctx.traps[decimal.Rounded] = False
+
+        for k, v in exif_data.items():
+            if isinstance(v, float):
+                d[k] = ctx.create_decimal_from_float(v)
+            else:
+                d[k] = v
     return d
 
 def generate_hash_key(geohash, hash_key_length):

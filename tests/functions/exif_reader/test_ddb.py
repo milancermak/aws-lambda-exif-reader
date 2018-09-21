@@ -53,9 +53,10 @@ def test_store_exif_data(monkeypatch):
     assert 'Item' in kwargs
     item_values = kwargs['Item'].values()
     assert object_key in item_values
-    assert exif_data in item_values
 
     stored_exif_data = kwargs['Item']['exif_data']
+    assert 'SourceFile' in stored_exif_data
+    assert 'EXIF:FocalLength' in stored_exif_data
     has_decimals = False
     for v in stored_exif_data.values():
         if isinstance(v, decimal.Decimal):
