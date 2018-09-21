@@ -8,6 +8,9 @@ import pytest
 from exif_reader import ddb, geo
 
 
+def test_decimal_from_float():
+    assert isinstance(ddb.decimal_from_float(1.23), decimal.Decimal)
+
 def test_decimalize():
     d = {'string': 'hello',
          'float': 1.23}
@@ -87,3 +90,7 @@ def test_store_coordinate(monkeypatch):
     assert len(item_values) == 4
     assert object_key in item_values
     assert geo.generate_geohash(coord) in item_values
+
+    geo_json = kwargs['Item'][ddb.GEOJSON_ATTRIBUTE_NAME]
+    assert isinstance(geo_json['coordinates'][0], decimal.Decimal)
+    assert isinstance(geo_json['coordinates'][1], decimal.Decimal)

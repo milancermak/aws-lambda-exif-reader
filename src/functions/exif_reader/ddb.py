@@ -15,20 +15,22 @@ GEOJSON_ATTRIBUTE_NAME = 'geoJson'
 dynamodb = boto3.resource('dynamodb')
 
 
-def decimalize(exif_data):
-    # pylint: disable=invalid-name
-
-    d = {}
+def decimal_from_float(f):
     # from ://github.com/boto/boto3/issues/665#issuecomment-223851711
     with decimal.localcontext(boto3.dynamodb.types.DYNAMODB_CONTEXT) as ctx:
         ctx.traps[decimal.Inexact] = False
         ctx.traps[decimal.Rounded] = False
+        return ctx.create_decimal_from_float(f)
 
-        for k, v in exif_data.items():
-            if isinstance(v, float):
-                d[k] = ctx.create_decimal_from_float(v)
-            else:
-                d[k] = v
+def decimalize(data_dict):
+    # pylint: disable=invalid-name
+
+    d = {}
+    for k, v in data_dict.items():
+        if isinstance(v, float):
+            d[k] = decimal_from_float(v)
+        else:
+            d[k] = v
     return d
 
 def generate_hash_key(geohash, hash_key_length):
@@ -52,7 +54,9 @@ def store_coordinate(object_key, coord):
     # GeoJSON RFC defines a Position as two elements of longitude and latitude
     # https://tools.ietf.org/html/rfc7946#section-3.1.1
     # however the dynamodb-geo library swaps the order...
-    geo_json = {'type': 'Point', 'coordinates': [coord.lng, coord.lat],
+    geo_json = {'type': 'Point',
+                'coordinates': [decimal_from_float(coord.lng),
+                                decimal_from_float(coord.lat)],
                 'object_key': object_key}
 
     table = dynamodb.Table(os.environ['GEO_DATA_TABLE'])
