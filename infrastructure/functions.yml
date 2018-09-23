@@ -114,10 +114,15 @@ Resources:
             Bucket: !Ref ImagesBucket
             Events: s3:ObjectCreated:*
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ExifDataTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref GeoDataTable
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:DescribeTable
+                - dynamodb:PutItem
+              Resource:
+                - !GetAtt ExifDataTable.Arn
+                - !GetAtt GeoDataTable.Arn
         - S3ReadPolicy:
             # using name to avoid circular dependency
             BucketName: !Ref ImagesBucketName
