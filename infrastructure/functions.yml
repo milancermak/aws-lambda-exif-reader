@@ -88,21 +88,6 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
-  TableWritePolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      Description: Allows write to DDB tables used by the service
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:DescribeTable
-              - dynamodb:PutItem
-            Resource:
-              - !GetAtt ExifDataTable.Arn
-              - !GetAtt GeoDataTable.Arn
-
   ImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -129,7 +114,10 @@ Resources:
             Bucket: !Ref ImagesBucket
             Events: s3:ObjectCreated:*
       Policies:
-        - !Ref TableWritePolicy
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ExifDataTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GeoDataTable
         - S3ReadPolicy:
             # using name to avoid circular dependency
             BucketName: !Ref ImagesBucketName
