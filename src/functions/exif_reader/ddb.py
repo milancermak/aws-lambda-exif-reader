@@ -1,4 +1,5 @@
 import decimal
+import json
 import math
 import os
 
@@ -54,10 +55,9 @@ def store_coordinate(object_key, coord):
     # GeoJSON RFC defines a Position as two elements of longitude and latitude
     # https://tools.ietf.org/html/rfc7946#section-3.1.1
     # however the dynamodb-geo library swaps the order...
-    geo_json = {'type': 'Point',
-                'coordinates': [decimal_from_float(coord.lng),
-                                decimal_from_float(coord.lat)],
-                'object_key': object_key}
+    geo_json = json.dumps({'type': 'Point',
+                           'coordinates': [coord.lng, coord.lat],
+                           'object_key': object_key})
 
     table = dynamodb.Table(os.environ['GEO_DATA_TABLE'])
     item = {HASHKEY_ATTRIBUTE_NAME: hash_key,

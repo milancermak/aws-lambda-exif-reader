@@ -1,6 +1,7 @@
 # pylint: disable=invalid-name
 
 import decimal
+import json
 from unittest.mock import Mock
 
 import pytest
@@ -92,5 +93,11 @@ def test_store_coordinate(monkeypatch):
     assert geo.generate_geohash(coord) in item_values
 
     geo_json = kwargs['Item'][ddb.GEOJSON_ATTRIBUTE_NAME]
-    assert isinstance(geo_json['coordinates'][0], decimal.Decimal)
-    assert isinstance(geo_json['coordinates'][1], decimal.Decimal)
+    assert isinstance(geo_json, str)
+    as_dict = json.loads(geo_json)
+    assert 'type' in as_dict
+    assert 'coordinates' in as_dict
+    assert pytest.approx(coord.lng) == as_dict['coordinates'][0]
+    assert pytest.approx(coord.lat) == as_dict['coordinates'][1]
+    assert 'object_key' in as_dict
+    assert as_dict['object_key'] == object_key
