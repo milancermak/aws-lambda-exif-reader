@@ -6,4 +6,4 @@ An AWS serverless application that extracts EXIF data from images (and any other
 
 You can use the `dynamo-db` geo libraries (available as an official [Java version](https://github.com/amazon-archives/dynamodb-geo) and an unofficial [JS version](https://github.com/rh389/dynamodb-geo.js)) to perform the geospatial queries.
 
-The app is available in the AWS Serverless repository.
+The app is [available](https://serverlessrepo.aws.amazon.com/#/applications/arn:aws:serverlessrepo:us-east-1:790194644437:applications~exif-reader) in the AWS Serverless repository.
